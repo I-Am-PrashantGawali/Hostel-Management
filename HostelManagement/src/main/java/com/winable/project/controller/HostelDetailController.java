@@ -1,15 +1,14 @@
 package com.winable.project.controller;
 
-import java.util.*;
 //import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.winable.project.entity.HostelDetail;
 import com.winable.project.service.HostelDetailService;
-
 
 
 @RestController
@@ -19,21 +18,38 @@ public class HostelDetailController {
 	private HostelDetailService HostelDetailService ;
 	
 	@GetMapping("/getAllHostelDetail")
-	public List<HostelDetail> getAllHostelDetail(){
-		return HostelDetailService.getAllHostelDetail();
+	public ResponseEntity<List<HostelDetail>> getAllHostelDetail(){
+		return ResponseEntity.ok(HostelDetailService.getAllHostelDetail());
 		}
 	
+	@GetMapping("/getStudentById/{studentId}")
+    public ResponseEntity<HostelDetail> getStudentById(@PathVariable int studentId) {
+        Optional<HostelDetail> hostelDetail = HostelDetailService.getStudentById(studentId);
+        return hostelDetail.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+	
 	@PostMapping("/registerStudent")
-	public HostelDetail registerStudent(@RequestBody HostelDetail hostelDetail) {
-		return HostelDetailService.RegisterStudent(hostelDetail);
+	public ResponseEntity registerStudent(@RequestBody HostelDetail hostelDetail) {
+		HostelDetailService.RegisterStudent(hostelDetail);
+        return ResponseEntity.ok().build();
+
 	}
-  @PutMapping("/putStock")
-  public HostelDetail updateHostelDetail(@RequestBody HostelDetail updateHostelDetail) {
-  	return HostelDetailService.updateHostelDetail(updateHostelDetail);
+  @PutMapping("/updateHostelDetail/put")
+  public ResponseEntity updateHostelDetail(@RequestBody HostelDetail updateHostelDetail) {
+	  HostelDetail hostelDetail = HostelDetailService.updateHostelDetail(updateHostelDetail);
+	  if (hostelDetail != null) {
+		  return ResponseEntity.ok(hostelDetail);
+	  }
+	  return ResponseEntity.notFound().build();
   }
-  @DeleteMapping("/deleteHostel/{id}")
-  public boolean deleteHostelDetail(@RequestBody HostelDetail delHostelDetail) {
-  	return HostelDetailService.deleteHostelDetail(delHostelDetail);
+  
+  @DeleteMapping("/deleteHostelDetailById/{studentd}")
+  public ResponseEntity deleteHostelDetail(@PathVariable int studentId) {
+	  HostelDetail hostelDetail = HostelDetailService.deleteHostelDetail(studentId);
+	  if (hostelDetail != null) {
+		  return ResponseEntity.ok(hostelDetail); 
+	  }
+	  return ResponseEntity.notFound().build();
   }
 }
 

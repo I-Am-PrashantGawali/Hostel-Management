@@ -2,63 +2,63 @@ package com.winable.project.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.winable.project.entity.HostelDetail;
+import com.winable.project.repository.HostelDetailRepo;
+
+
 import jakarta.annotation.PostConstruct;
 
 @Service
 public class HostelDetailslmpl implements HostelDetailService {
 
-	List<HostelDetail> hostelDetails=new ArrayList<>();
-	private HostelDetail hosteldetails1;
-	@PostConstruct
-	public void init() {
-		HostelDetail student1=new HostelDetail(111 , 101, 1, "Wing-A");
-		HostelDetail student2=new HostelDetail(112 , 102, 2, "Wing-B");
-		HostelDetail student3=new HostelDetail(113 , 103, 3, "Wing-C");
-		hostelDetails.add(student1);
-		hostelDetails.add(student2);
-		hostelDetails.add(student3);
-		System.out.println("Initialised Stock List:" + hostelDetails);
+	@Autowired
+	private HostelDetailRepo hostelDetailRepo;
+	
+	@Override
+	public List<HostelDetail> getAllHostelDetail(){
+		return hostelDetailRepo.findAll();
+	}
+	
+	@Override
+    public Optional<HostelDetail> getStudentById(int studentId) {
+		return hostelDetailRepo.findById(studentId);
+	   }
 		
-	}
 	@Override
-	public List<HostelDetail> getAllHostelDetail() {
-		return hostelDetails;
-	}
-	@Override
-	public HostelDetail RegisterStudent(HostelDetail hostelDetail) {
-		if(hostelDetails.add(hostelDetail)) {
-			return hostelDetail;
-		}
-		return null;
+	public void RegisterStudent(HostelDetail hostelDetail) {
+		hostelDetailRepo.save(hostelDetail);
 	}
 	public HostelDetail updateStockDetail(HostelDetail updateHostelDetail) {
-		for(HostelDetail hostelDetail : hostelDetails) {
-		if(updateHostelDetail.getStudentId()==hostelDetail.getStudentId()) {
-			hostelDetail.setStudentId(updateHostelDetail.getStudentId());
-			hostelDetail.setRoomNo(updateHostelDetail.getRoomNo());
-			hostelDetail.setFloorNo(updateHostelDetail.getFloorNo());
-			hostelDetail.setBuildingName(updateHostelDetail.getBuildingName());
-			return hostelDetail;
+		Optional<HostelDetail> hostelDetail = hostelDetailRepo.findById(updateHostelDetail.getStudentId());
+		if(hostelDetail.isPresent()) {
+			hostelDetail.get().setStudentId(updateHostelDetail.getStudentId());
+			hostelDetail.get().setRoomNo(updateHostelDetail.getRoomNo());
+			hostelDetail.get().setFloorNo(updateHostelDetail.getFloorNo());
+			hostelDetail.get().setBuildingName(updateHostelDetail.getBuildingName());
+			hostelDetailRepo.save(hostelDetail.get());
 		}
-	}
 		return null;
 	}
+	
 	@Override
-	public boolean deleteHostelDetail(HostelDetail delHostelDetail) {
-		for(HostelDetail hostelDetail : hostelDetails) {
-			if(delHostelDetail.getStudentId()==hostelDetail.getStudentId()) {
-				hostelDetails.remove(hostelDetail);
-				return true;
-			}
-		}		
-		return false;
-	}
+	public HostelDetail deleteHostelDetail(int studentId) {
+		Optional<HostelDetail> hostelDetail = hostelDetailRepo.findById(studentId);
+		 if (hostelDetail.isPresent()) {
+			 hostelDetailRepo.deleteById(studentId);
+	            return hostelDetail.get();
+	        } else {
+	            return null;
+	        }
+	    }
 	@Override
-	public HostelDetail updateHostelDetail(HostelDetail updateHostelDetail) {
+	public HostelDetail updateHostelDetail(HostelDetail hostelDetail) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-}
+	}
+
