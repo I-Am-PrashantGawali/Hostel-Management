@@ -33,17 +33,6 @@ public class HostelDetailslmpl implements HostelDetailService {
 	public void RegisterStudent(HostelDetail hostelDetail) {
 		hostelDetailRepo.save(hostelDetail);
 	}
-	public HostelDetail updateStockDetail(HostelDetail updateHostelDetail) {
-		Optional<HostelDetail> hostelDetail = hostelDetailRepo.findById(updateHostelDetail.getStudentId());
-		if(hostelDetail.isPresent()) {
-			hostelDetail.get().setStudentId(updateHostelDetail.getStudentId());
-			hostelDetail.get().setRoomNo(updateHostelDetail.getRoomNo());
-			hostelDetail.get().setFloorNo(updateHostelDetail.getFloorNo());
-			hostelDetail.get().setBuildingName(updateHostelDetail.getBuildingName());
-			hostelDetailRepo.save(hostelDetail.get());
-		}
-		return null;
-	}
 	
 	@Override
 	public HostelDetail deleteHostelDetail(int studentId) {
@@ -57,8 +46,16 @@ public class HostelDetailslmpl implements HostelDetailService {
 	    }
 	@Override
 	public HostelDetail updateHostelDetail(HostelDetail hostelDetail) {
-		// TODO Auto-generated method stub
-		return null;
+		Optional<HostelDetail> eXhostelDetail = hostelDetailRepo.findById(hostelDetail.getStudentId());
+		if(eXhostelDetail.isPresent()) {
+			System.out.println("Present");
+			eXhostelDetail.get().setStudentId(hostelDetail.getStudentId());
+			eXhostelDetail.get().setRoomNo(hostelDetail.getRoomNo());
+			eXhostelDetail.get().setFloorNo(hostelDetail.getFloorNo());
+			eXhostelDetail.get().setBuildingName(hostelDetail.getBuildingName());
+			hostelDetailRepo.save(eXhostelDetail.get());
+		}
+		return hostelDetail;
 	}
 	}
 

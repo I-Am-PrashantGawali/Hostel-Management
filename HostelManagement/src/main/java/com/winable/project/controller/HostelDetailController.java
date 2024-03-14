@@ -43,7 +43,7 @@ public class HostelDetailController {
 	  return ResponseEntity.notFound().build();
   }
   
-  @DeleteMapping("/deleteHostelDetailById/{studentd}")
+  @DeleteMapping("/deleteHostelDetailById/{studentId}")
   public ResponseEntity deleteHostelDetail(@PathVariable int studentId) {
 	  HostelDetail hostelDetail = HostelDetailService.deleteHostelDetail(studentId);
 	  if (hostelDetail != null) {

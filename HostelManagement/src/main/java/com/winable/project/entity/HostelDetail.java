@@ -37,6 +37,9 @@ public class HostelDetail {
 		this.floorNo = floorNo;
 		this.buildingName = buildingName;
 	}
+    public HostelDetail () {
+    	
+    }
     public int getStudentId() {
 		return studentId;
 	}
